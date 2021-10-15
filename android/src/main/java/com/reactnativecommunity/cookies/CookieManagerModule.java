@@ -40,7 +40,6 @@ public class CookieManagerModule extends ReactContextBaseJavaModule {
     private static final String INVALID_URL_MISSING_HTTP = "Invalid URL: It may be missing a protocol (ex. http:// or https://).";
     private static final String INVALID_COOKIE_VALUES = "Unable to add cookie - invalid values";
     private static final String GET_ALL_NOT_SUPPORTED = "Get all cookies not supported for Android (iOS only)";
-    private static final String CLEAR_BY_NAME_NOT_SUPPORTED = "Cannot remove a single cookie by name on Android";
     private static final String INVALID_DOMAINS = "Cookie URL host %s and domain %s mismatched. The cookie won't set correctly.";
 
     private CookieSyncManager mCookieSyncManager;
@@ -130,7 +129,25 @@ public class CookieManagerModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void clearByName(String url, String name, Boolean useWebKit, final Promise promise) {
-        promise.reject(new Exception(CLEAR_BY_NAME_NOT_SUPPORTED));
+        try {
+            String cookies = getCookieManager().getCookie(url);
+            if (cookies == null) {
+                promise.resolve(true);
+            } else {
+                String[] splitCookies = cookies.split(";");
+                for (String cookie : splitCookies) {
+                    String[] cookieParts = cookie.split("=");
+                    if (cookieParts.length > 0 && cookieParts[0].trim() == name) {
+                        String newCookie = cookieParts[0].trim() + "=;expires=Sat, 1 Jan 2000 00:00:01 UTC;";
+                        cookieManager.setCookie(url, newCookie);
+                        break;
+                    }
+                }
+                cookieManager.removeExpiredCookie();
+            }
+        } catch (Exeption e) {
+            promise.reject(e);
+        }
     }
 
     @ReactMethod
@@ -282,17 +299,16 @@ public class CookieManagerModule extends ReactContextBaseJavaModule {
     }
 
     /**
-     * As HttpCookie is designed specifically for headers, it only gives us 2 formats on toString
-     * dependent on the cookie version: 0 = Netscape; 1 = RFC 2965/2109, both without leading "Cookie:" token.
-     * For our purposes RFC 6265 is the right way to go.
-     * This is a convenience method to give us the right formatting.
+     * As HttpCookie is designed specifically for headers, it only gives us 2
+     * formats on toString dependent on the cookie version: 0 = Netscape; 1 = RFC
+     * 2965/2109, both without leading "Cookie:" token. For our purposes RFC 6265 is
+     * the right way to go. This is a convenience method to give us the right
+     * formatting.
      */
     private String toRFC6265string(HttpCookie cookie) {
         StringBuilder builder = new StringBuilder();
 
-        builder.append(cookie.getName())
-                .append('=')
-                .append(cookie.getValue());
+        builder.append(cookie.getName()).append('=').append(cookie.getValue());
 
         if (!cookie.hasExpired()) {
             long expiresAt = cookie.getMaxAge();
@@ -305,13 +321,11 @@ public class CookieManagerModule extends ReactContextBaseJavaModule {
         }
 
         if (!isEmpty(cookie.getDomain())) {
-            builder.append("; domain=")
-                    .append(cookie.getDomain());
+            builder.append("; domain=").append(cookie.getDomain());
         }
 
         if (!isEmpty(cookie.getPath())) {
-            builder.append("; path=")
-                    .append(cookie.getPath());
+            builder.append("; path=").append(cookie.getPath());
         }
 
         if (cookie.getSecure()) {
@@ -343,7 +357,8 @@ public class CookieManagerModule extends ReactContextBaseJavaModule {
     }
 
     /**
-     * Used building the correctly formatted date for a cookie string in RFC_1123_DATE_TIME format
+     * Used building the correctly formatted date for a cookie string in
+     * RFC_1123_DATE_TIME format
      *
      * @return simple date formatter
      */
