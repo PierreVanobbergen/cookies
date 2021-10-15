@@ -145,7 +145,7 @@ public class CookieManagerModule extends ReactContextBaseJavaModule {
                 }
                 cookieManager.removeExpiredCookie();
             }
-        } catch (Exeption e) {
+        } catch (Exception e) {
             promise.reject(e);
         }
     }
