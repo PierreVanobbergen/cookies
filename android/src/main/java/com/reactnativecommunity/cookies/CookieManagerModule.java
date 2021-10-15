@@ -139,11 +139,11 @@ public class CookieManagerModule extends ReactContextBaseJavaModule {
                     String[] cookieParts = cookie.split("=");
                     if (cookieParts.length > 0 && cookieParts[0].trim() == name) {
                         String newCookie = cookieParts[0].trim() + "=;expires=Sat, 1 Jan 2000 00:00:01 UTC;";
-                        cookieManager.setCookie(url, newCookie);
+                        getCookieManager().setCookie(url, newCookie);
                         break;
                     }
                 }
-                cookieManager.removeExpiredCookie();
+                getCookieManager().removeExpiredCookie();
             }
         } catch (Exception e) {
             promise.reject(e);
