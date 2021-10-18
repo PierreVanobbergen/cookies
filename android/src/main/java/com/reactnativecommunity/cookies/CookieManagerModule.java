@@ -300,16 +300,17 @@ public class CookieManagerModule extends ReactContextBaseJavaModule {
     }
 
     /**
-     * As HttpCookie is designed specifically for headers, it only gives us 2
-     * formats on toString dependent on the cookie version: 0 = Netscape; 1 = RFC
-     * 2965/2109, both without leading "Cookie:" token. For our purposes RFC 6265 is
-     * the right way to go. This is a convenience method to give us the right
-     * formatting.
+    * As HttpCookie is designed specifically for headers, it only gives us 2 formats on toString
+     * dependent on the cookie version: 0 = Netscape; 1 = RFC 2965/2109, both without leading "Cookie:" token.
+     * For our purposes RFC 6265 is the right way to go.
+     * This is a convenience method to give us the right formatting.
      */
     private String toRFC6265string(HttpCookie cookie) {
         StringBuilder builder = new StringBuilder();
 
-        builder.append(cookie.getName()).append('=').append(cookie.getValue());
+        builder.append(cookie.getName())
+                .append('=')
+                .append(cookie.getValue());
 
         if (!cookie.hasExpired()) {
             long expiresAt = cookie.getMaxAge();
@@ -322,11 +323,13 @@ public class CookieManagerModule extends ReactContextBaseJavaModule {
         }
 
         if (!isEmpty(cookie.getDomain())) {
-            builder.append("; domain=").append(cookie.getDomain());
+            builder.append("; domain=")
+                    .append(cookie.getDomain());
         }
 
         if (!isEmpty(cookie.getPath())) {
-            builder.append("; path=").append(cookie.getPath());
+            builder.append("; path=")
+                    .append(cookie.getPath());
         }
 
         if (cookie.getSecure()) {
@@ -358,8 +361,7 @@ public class CookieManagerModule extends ReactContextBaseJavaModule {
     }
 
     /**
-     * Used building the correctly formatted date for a cookie string in
-     * RFC_1123_DATE_TIME format
+     * Used building the correctly formatted date for a cookie string in RFC_1123_DATE_TIME format
      *
      * @return simple date formatter
      */
