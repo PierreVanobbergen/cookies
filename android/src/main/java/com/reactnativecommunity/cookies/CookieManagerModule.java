@@ -300,7 +300,7 @@ public class CookieManagerModule extends ReactContextBaseJavaModule {
     }
 
     /**
-    * As HttpCookie is designed specifically for headers, it only gives us 2 formats on toString
+     * As HttpCookie is designed specifically for headers, it only gives us 2 formats on toString
      * dependent on the cookie version: 0 = Netscape; 1 = RFC 2965/2109, both without leading "Cookie:" token.
      * For our purposes RFC 6265 is the right way to go.
      * This is a convenience method to give us the right formatting.
