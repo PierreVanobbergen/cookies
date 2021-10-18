@@ -9,6 +9,7 @@ Cookie Manager for React Native
 This module was ported from [joeferraro/react-native-cookies](https://github.com/joeferraro/react-native-cookies). This would not exist without the work of the original author, [Joe Ferraro](https://github.com/joeferraro).
 
 ## Important notices & Breaking Changes
+
 - **v6.0.0**: Package name updated to `@react-native-cookies/cookies`.
 - **v5.0.0**: Peer Dependency of >= React Native 0.60.2
 - **v4.0.0**: Android SDK version bumpted to 21
@@ -106,7 +107,7 @@ CookieManager.clearAll()
     console.log('CookieManager.clearAll =>', success);
   });
 
-// clear a specific cookie by its name (IOS ONLY)
+// clear a specific cookie by its name
 CookieManager.clearByName('http://example.com', 'cookie_name')
   .then((success) => {
     console.log('CookieManager.clearByName =>', success);
